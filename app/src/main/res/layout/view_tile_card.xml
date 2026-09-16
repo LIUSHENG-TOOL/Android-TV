@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tile_card"
+    android:layout_width="@dimen/tile_width"
+    android:layout_height="@dimen/tile_height"
+    android:background="@drawable/bg_tile"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/tile_logo"
+        android:layout_width="@dimen/tile_logo_size"
+        android:layout_height="@dimen/tile_logo_size"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="54dp"
+        android:contentDescription="@string/app_name" />
+
+    <TextView
+        android:id="@+id/tile_title"
+        style="@style/TileTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="26dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp" />
+</FrameLayout>

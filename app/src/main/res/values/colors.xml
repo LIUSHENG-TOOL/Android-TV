@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 屏幕背景：竖向蓝色渐变 -->
+    <color name="bg_blue_top">#FF1B45DE</color>
+    <color name="bg_blue_mid">#FF1233B8</color>
+    <color name="bg_blue_bottom">#FF081A78</color>
+
+    <!-- 四个应用卡片底色 -->
+    <color name="tile_netflix">#FF0D0D0D</color>
+    <color name="tile_youtube">#FF3B3B3B</color>
+    <color name="tile_play">#FF86C560</color>
+    <color name="tile_chrome">#FF7E6BC9</color>
+
+    <!-- 品牌色 -->
+    <color name="brand_netflix_red">#FFE50914</color>
+    <color name="brand_youtube_red">#FFFF0000</color>
+    <color name="brand_gp_blue">#FF2196F3</color>
+    <color name="brand_gp_green">#FF4CAF50</color>
+    <color name="brand_gp_yellow">#FFFFC107</color>
+    <color name="brand_gp_red">#FFFF3D00</color>
+    <color name="brand_chrome_red">#FFEA4335</color>
+    <color name="brand_chrome_green">#FF34A853</color>
+    <color name="brand_chrome_yellow">#FFFBBC05</color>
+    <color name="brand_chrome_blue">#FF4285F4</color>
+
+    <!-- 底部 Dock -->
+    <color name="dock_top">#FF3B8AF5</color>
+    <color name="dock_bottom">#FF1A5FD0</color>
+    <color name="dock_stroke">#FF7FC4FF</color>
+    <color name="dock_stroke_focus">#FFFFFFFF</color>
+    <color name="dock_text">#FFEAF3FF</color>
+    <color name="dock_text_focus">#FFFFFFFF</color>
+
+    <!-- 通用文字 -->
+    <color name="text_primary">#FFFFFFFF</color>
+    <color name="text_secondary">#FFB9CDF5</color>
+
+    <!-- 应用列表 -->
+    <color name="list_item_bg">#FF1B3EA8</color>
+    <color name="list_item_bg_focus">#FF2E7BEE</color>
+    <color name="list_item_stroke_focus">#FFFFFFFF</color>
+
+    <!-- 卡片聚焦态描边（四张主卡片） -->
+    <color name="tile_stroke_focus">#FFFFFFFF</color>
+    <color name="scrim_top">#33000000</color>
+
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="transparent">#00000000</color>
+</resources>

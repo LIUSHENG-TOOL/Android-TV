@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- USB 连接状态图标（原设计稿状态栏中位于 Wi-Fi 图标左侧） -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="26dp"
+    android:height="26dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <!-- 主干 -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M46,30 H54 V92 H46 Z" />
+    <!-- 顶部箭头 -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M50,2 L64,26 H36 Z" />
+    <!-- 左分支 + 圆头 -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M50,74 L20,58"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round"
+        android:strokeWidth="8" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M10,58 A11,11 0 1 0 32,58 A11,11 0 1 0 10,58 Z" />
+    <!-- 右分支 + 方头 -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M50,52 L78,66"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round"
+        android:strokeWidth="8" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M74,62 H94 V82 H74 Z" />
+</vector>

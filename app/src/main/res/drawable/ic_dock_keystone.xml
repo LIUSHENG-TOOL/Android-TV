@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Keystone（梯形校正）。
+  原稿图标 = 一个矩形外框 + 框内自顶角向底边收拢的两条斜线，
+  两条斜线与矩形的上边一起构成"倒梯形"（下窄上宽）—— 模拟画面被梯形校正的示意。
+  此前误画成单个梯形轮廓。
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <!-- 外框矩形 -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M5,28 H95 V72 H5 Z"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineJoin="round"
+        android:strokeWidth="6.5" />
+    <!-- 左斜线：左上角 → 底边偏左 -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M5,28 L36,72"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="6.5" />
+    <!-- 右斜线：右上角 → 底边偏右 -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M95,28 L64,72"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="6.5" />
+</vector>

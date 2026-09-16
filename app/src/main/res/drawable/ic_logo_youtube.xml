@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  YouTube 官方图标（路径取自 Simple Icons 的 youtube 图标，24x24 视口）。
+  官方路径的最后一个子路径 M9.545 15.568V8.432L15.818 12z 是"挖空"的播放三角，
+  这里用 fillType=evenOdd 保持挖空，再单独叠一个白色三角，得到设计稿里的红底白三角效果。
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFF0000"
+        android:fillType="evenOdd"
+        android:pathData="M23.498,6.186 A3.02,3.02 0 0 0 21.376,4.05 C19.505,3.545 12,3.545 12,3.545 C12,3.545 4.495,3.545 2.623,4.05 A3.02,3.02 0 0 0 0.502,6.186 C0,8.07 0,12 0,12 C0,12 0,15.93 0.502,17.814 A3.02,3.02 0 0 0 2.624,19.95 C4.495,20.455 12,20.455 12,20.455 C12,20.455 19.505,20.455 21.377,19.95 A3.02,3.02 0 0 0 23.499,17.814 C24,15.93 24,12 24,12 C24,12 24,8.07 23.498,6.186 Z M9.545,15.568 L9.545,8.432 L15.818,12 Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M9.545,15.568 L9.545,8.432 L15.818,12 Z" />
+</vector>

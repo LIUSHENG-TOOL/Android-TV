@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TV Launcher Demo · 交互预览</title>
+<style>
+  :root{
+    --blue-top:#1b45de; --blue-mid:#1233b8; --blue-bottom:#081a78;
+    --tile-netflix:#0d0d0d; --tile-youtube:#3b3b3b; --tile-play:#86c560; --tile-chrome:#7e6bc9;
+    --netflix-red:#e50914; --yt-red:#ff0000;
+    --gp-blue:#2196f3; --gp-green:#4caf50; --gp-yellow:#ffc107; --gp-red:#ff3d00;
+    --ch-red:#ea4335; --ch-green:#34a853; --ch-yellow:#fbbc05; --ch-blue:#4285f4;
+    --dock-top:#3b8af5; --dock-bottom:#1a5fd0; --dock-stroke:#7fc4ff;
+    --text:#fff; --text-dim:#b9cdf5;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#06103f;font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;overflow:hidden}
+  #viewport{position:fixed;inset:0;display:grid;place-items:center}
+
+  /* 1920x1080 设计舞台，按窗口等比缩放 */
+  #stage{
+    width:1920px;height:1080px;position:relative;transform-origin:center center;
+    background:linear-gradient(180deg,var(--blue-top) 0%,var(--blue-mid) 55%,var(--blue-bottom) 100%);
+    display:flex;flex-direction:column;padding:30px 0 50px;user-select:none;
+  }
+
+  /* ---------- 顶部状态栏 ---------- */
+  #status{height:100px;display:flex;align-items:center;justify-content:flex-end;padding:0 80px;gap:28px;flex:none}
+  #status svg{width:48px;height:48px;fill:#fff}
+  #status .clock{font-size:34px;color:var(--text);letter-spacing:.5px}
+  #status .date{font-size:34px;color:var(--text)}
+
+  /* ---------- 四张主卡片 ---------- */
+  #tile-area{flex:1;display:flex;align-items:center;justify-content:center}
+  #tile-row{display:flex;gap:44px}
+  .tile-wrap{display:flex;flex-direction:column;align-items:center}
+  .tile{
+    width:380px;height:480px;border-radius:30px;position:relative;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;
+    transition:transform .18s cubic-bezier(.2,.8,.3,1), box-shadow .18s;
+    box-shadow:0 16px 38px rgba(0,0,0,.34);
+  }
+  .tile .logo{width:304px;height:304px;margin-top:34px}
+  .tile .name{position:absolute;bottom:42px;font-size:44px;font-weight:700;color:#fff;letter-spacing:.4px}
+  .tile.focused{transform:scale(1.06);box-shadow:0 0 0 7px #fff, 0 20px 46px rgba(0,0,0,.42)}
+  /* 点击（按下）时的缩小反馈，与"选中放大"区分开 */
+  .tile:active,.dock:active{transform:scale(.94)!important;transition:transform .09s linear}
+  .tile[data-id="netflix"]{background:var(--tile-netflix)}
+  .tile[data-id="youtube"]{background:var(--tile-youtube)}
+  .tile[data-id="play"]{background:var(--tile-play)}
+  .tile[data-id="chrome"]{background:var(--tile-chrome)}
+
+  /* ---------- 倒影 ---------- */
+  .reflection{
+    width:380px;height:202px;overflow:hidden;
+    -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.42),rgba(0,0,0,0));
+            mask-image:linear-gradient(to bottom,rgba(0,0,0,.42),rgba(0,0,0,0));
+    pointer-events:none;
+  }
+  /* 注意：这里用默认的 transform-origin（中心）—— 子元素被镜像后，
+     卡片底边会落在倒影区顶部，与上方卡片自然衔接 */
+  .reflection .inner{transform:scaleY(-1)}
+  .reflection .inner .tile{box-shadow:none}
+  .reflection .inner .tile .name{color:#fff}
+
+  /* ---------- 底部 Dock ---------- */
+  #dock{display:flex;gap:28px;justify-content:center;flex:none}
+  .dock{
+    width:278px;height:180px;border-radius:22px;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    background:linear-gradient(180deg,var(--dock-top),var(--dock-bottom));
+    border:4px solid var(--dock-stroke);
+    transition:transform .18s cubic-bezier(.2,.8,.3,1),box-shadow .18s,border-color .18s;
+    box-shadow:0 10px 26px rgba(0,0,0,.28);
+  }
+  .dock svg{width:68px;height:68px}
+  .dock .label{font-size:27px;color:#eaf3ff}
+  .dock.focused{border-color:#fff;transform:scale(1.06);box-shadow:0 0 0 3px rgba(255,255,255,.35),0 14px 30px rgba(0,0,0,.34)}
+  .dock.focused .label{color:#fff;font-weight:600}
+
+  /* ---------- APPLIST 覆盖层 ---------- */
+  #applist{
+    position:absolute;inset:0;background:linear-gradient(180deg,#0d2ba8,#061458 70%);
+    display:none;flex-direction:column;padding:56px 96px;
+  }
+  #applist.show{display:flex}
+  #applist h2{color:#fff;font-size:52px;font-weight:700}
+  #applist .hint{color:var(--text-dim);font-size:26px;margin-top:12px}
+  #app-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:26px;margin-top:44px;overflow:hidden;align-content:start}
+  .app{
+    height:300px;border-radius:28px;background:#1b3ea8;border:2px solid rgba(255,255,255,.2);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;cursor:pointer;
+    transition:transform .16s,background .16s,border-color .16s;
+  }
+  .app .ico{width:108px;height:108px;border-radius:26px;display:grid;place-items:center;font-size:52px;font-weight:700;color:#fff}
+  .app .lb{font-size:26px;color:#fff}
+  .app.focused{background:#2e7bee;border-color:#fff;border-width:4px;transform:scale(1.05)}
+
+  /* ---------- 提示与 Toast ---------- */
+  #toast{
+    position:absolute;left:50%;bottom:60px;transform:translate(-50%,40px);opacity:0;
+    background:rgba(0,0,0,.78);color:#fff;padding:22px 44px;border-radius:16px;font-size:30px;
+    transition:.25s;pointer-events:none;white-space:nowrap;
+  }
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+  #keybar{
+    position:absolute;left:50%;bottom:18px;transform:translateX(-50%);
+    color:rgba(255,255,255,.6);font-size:23px;letter-spacing:.5px
+  }
+</style>
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+    <div id="status">
+      <svg viewBox="0 0 24 24"><path d="M1,9l2,2c4.97,-4.97 13.03,-4.97 18,0l2,-2C16.93,2.93 7.08,2.93 1,9zM9,17l3,3l3,-3c-1.65,-1.66 -4.34,-1.66 -6,0zM5,13l2,2c2.76,-2.76 7.24,-2.76 10,0l2,-2C15.14,9.14 8.87,9.14 5,13z"/></svg>
+      <span class="clock" id="clock">8:08 AM</span>
+      <span class="date" id="date">Saturday,November 11</span>
+    </div>
+
+    <div id="tile-area"><div id="tile-row"></div></div>
+    <div id="dock"></div>
+
+    <div id="applist">
+      <h2 id="applist-title">全部应用</h2>
+      <div class="hint" id="applist-hint">方向键移动 · 回车打开 · Esc 返回</div>
+      <div id="app-grid"></div>
+    </div>
+
+    <div id="toast"></div>
+    <div id="keybar">← ↑ → ↓ 移动焦点　·　回车 打开　·　M 键 / 长按 进入全部应用列表</div>
+  </div>
+</div>
+
+<script>
+/* ==================== 图标（与 Android 端矢量资源一一对应） ==================== */
+const LOGOS = {
+  netflix: `<svg viewBox="0 0 24 24"><path fill="#e50914" d="M5.398,0 L13.746,23.602 C16.092,23.661 18.602,24 18.602,24 L10.113,0 Z M13.887,0 L13.887,9.172 L18.602,22.502 L18.602,0 Z M5.398,1.5 L5.398,24 C7.271,23.775 8.208,23.688 10.113,23.602 L10.113,14.83 Z"/></svg>`,
+  youtube: `<svg viewBox="0 0 24 24"><path fill="#ff0000" fill-rule="evenodd" d="M23.498,6.186 A3.02,3.02 0 0 0 21.376,4.05 C19.505,3.545 12,3.545 12,3.545 C12,3.545 4.495,3.545 2.623,4.05 A3.02,3.02 0 0 0 0.502,6.186 C0,8.07 0,12 0,12 C0,12 0,15.93 0.502,17.814 A3.02,3.02 0 0 0 2.624,19.95 C4.495,20.455 12,20.455 12,20.455 C12,20.455 19.505,20.455 21.377,19.95 A3.02,3.02 0 0 0 23.499,17.814 C24,15.93 24,12 24,12 C24,12 24,8.07 23.498,6.186 Z M9.545,15.568 L9.545,8.432 L15.818,12 Z"/><path fill="#fff" d="M9.545,15.568 L9.545,8.432 L15.818,12 Z"/></svg>`,
+  play: `<svg viewBox="0 0 100 101"><path fill="#ea4335" d="M42.714,48.203 L0.38,92.557 A11.483,11.483 0 0 0 17.194,99.372 L64.829,72.242 Z"/><path fill="#fbbc04" d="M85.523,40.663 L64.923,28.865 L41.736,49.213 L65.017,72.178 L85.46,60.506 A11.199,11.199 0 0 0 85.46,40.663 Z"/><path fill="#4285f4" d="M0.379,8.391 A11,11 0 0 0 0,11.294 L0,89.655 C0.003,90.635 0.13,91.61 0.379,92.557 L44.165,49.34 Z"/><path fill="#34a853" d="M43.03,50.474 L64.923,28.865 L17.35,1.61 A11.74,11.74 0 0 0 11.45,0 A11.48,11.48 0 0 0 0.38,8.36 Z"/></svg>`,
+  chrome: `<svg viewBox="0 0 256 256"><path fill="#fff" d="M128.003,199.216 C167.338,199.216 199.224,167.328 199.224,127.993 S167.338,56.77 128.003,56.77 S56.78,88.658 56.78,127.993 C56.78,167.328 88.667,199.216 128.002,199.216"/><path fill="#229342" d="M35.89,92.997 Q27.92,79.192 17.154,64.02 A127.98,127.98 0 0 0 128.011,256 Q145.682,231.215 152.007,220.26 Q164.155,199.218 183.43,160.009 L183.43,159.994 A63.993,63.993 0 0 1 72.573,160.011 Q46.395,111.19 35.89,92.998"/><path fill="#fbc116" d="M128.008,255.996 A127.97,127.97 0 0 0 256,127.997 A128,128 0 0 0 238.837,64 Q202.465,60.415 185.151,60.415 Q165.519,60.415 127.999,64 L127.985,64.01 A63.99,63.99 0 0 1 183.429,95.997 A63.99,63.99 0 0 1 183.428,160.007 Z"/><path fill="#1a73e8" d="M128.003,178.677 C155.987,178.677 178.672,155.992 178.672,127.007 C178.672,99.023 155.987,76.337 128.002,76.337 C100.019,76.337 77.333,99.023 77.333,127.007 C77.333,154.992 100.019,178.677 128.003,178.677"/><path fill="#e33b2e" d="M128.003,64.004 L238.84,64.004 A127.973,127.973 0 0 0 17.155,64.019 L72.574,160.009 L72.589,160.017 A63.993,63.993 0 0 1 128.004,64.003 Z"/></svg>`
+};
+const DOCK_ICONS = {
+  keystone: `<svg viewBox="0 0 100 100"><g fill="none" stroke="#fff" stroke-width="6.5"><path d="M5,28 H95 V72 H5 Z"/><path d="M5,28 L36,72"/><path d="M95,28 L64,72"/></g></svg>`,
+  miracast: `<svg viewBox="0 0 100 100"><path fill="none" stroke="#fff" stroke-width="6" d="M40,12 H92 A5,5 0 0 1 97,17 V58 A5,5 0 0 1 92,63 H40 A5,5 0 0 1 35,58 V17 A5,5 0 0 1 40,12 Z"/><path fill="none" stroke="#fff" stroke-width="6" d="M13,32 H38 A5,5 0 0 1 43,37 V88 A5,5 0 0 1 38,93 H13 A5,5 0 0 1 8,88 V37 A5,5 0 0 1 13,32 Z"/></svg>`,
+  signal: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="9" fill="#fff"/><g fill="none" stroke="#fff" stroke-width="6.5" stroke-linecap="round"><path d="M64.1,35.9 A20,20 0 0 1 64.1,64.1"/><path d="M72.6,27.4 A32,32 0 0 1 72.6,72.6"/><path d="M81.1,18.9 A44,44 0 0 1 81.1,81.1"/><path d="M35.9,64.1 A20,20 0 0 1 35.9,35.9"/><path d="M27.4,72.6 A32,32 0 0 1 27.4,27.4"/><path d="M18.9,81.1 A44,44 0 0 1 18.9,18.9"/></g></svg>`,
+  myapps: `<svg viewBox="0 0 100 100"><g fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"><path d="M23,34 H77 L85,90 H15 Z" stroke-linejoin="round"/><path d="M33,34 V26 A17,17 0 0 1 67,26 V34"/><path stroke-width="6" d="M36,60 A16,16 0 0 0 64,60"/></g></svg>`,
+  settings: `<svg viewBox="0 0 24 24"><path fill="#fff" d="M19.14,12.94c0.04,-0.3 0.06,-0.61 0.06,-0.94c0,-0.32 -0.02,-0.64 -0.07,-0.94l2.03,-1.58c0.18,-0.14 0.23,-0.41 0.12,-0.61l-1.92,-3.32c-0.12,-0.22 -0.37,-0.29 -0.59,-0.22l-2.39,0.96c-0.5,-0.38 -1.03,-0.7 -1.62,-0.94L14.4,2.81c-0.04,-0.24 -0.24,-0.41 -0.48,-0.41h-3.84c-0.24,0 -0.43,0.17 -0.47,0.41L9.25,5.35C8.66,5.59 8.12,5.92 7.63,6.29L5.24,5.33c-0.22,-0.08 -0.47,0 -0.59,0.22L2.74,8.87C2.62,9.08 2.66,9.34 2.86,9.48l2.03,1.58C4.84,11.36 4.8,11.69 4.8,12s0.02,0.64 0.07,0.94l-2.03,1.58c-0.18,0.14 -0.23,0.41 -0.12,0.61l1.92,3.32c0.12,0.22 0.37,0.29 0.59,0.22l2.39,-0.96c0.5,0.38 1.03,0.7 1.62,0.94l0.36,2.54c0.05,0.24 0.24,0.41 0.48,0.41h3.84c0.24,0 0.44,-0.17 0.47,-0.41l0.36,-2.54c0.59,-0.24 1.13,-0.56 1.62,-0.94l2.39,0.96c0.22,0.08 0.47,0 0.59,-0.22l1.92,-3.32c0.12,-0.22 0.07,-0.47 -0.12,-0.61L19.14,12.94zM12,15.6c-1.98,0 -3.6,-1.62 -3.6,-3.6s1.62,-3.6 3.6,-3.6s3.6,1.62 3.6,3.6S13.98,15.6 12,15.6z"/></svg>`
+};
+
+/* ==================== 数据（与 data/TileSpec.kt 保持一致） ==================== */
+const TILES = [
+  { id:'netflix', name:'NETFLIX',      pkg:'com.netflix.ninja',        icon:'netflix' },
+  { id:'youtube', name:'YouTube',      pkg:'com.google.android.youtube.tv', icon:'youtube' },
+  { id:'play',    name:'Google Play',  pkg:'com.android.vending',      icon:'play' },
+  { id:'chrome',  name:'chrome',       pkg:'com.android.chrome',       icon:'chrome' }
+];
+const DOCKS = [
+  { id:'keystone', name:'Keystone',      icon:'keystone', pkg:'com.android.settings/.display.KeystoneActivity' },
+  { id:'miracast', name:'Miracast',      icon:'miracast', pkg:'android.settings.CAST_SETTINGS' },
+  { id:'signal',   name:'Signal Source', icon:'signal',   pkg:'android.settings.TV_INPUT_SETTINGS' },
+  { id:'myapps',   name:'My Apps',       icon:'myapps',   pkg:'@applist' },
+  { id:'settings', name:'Settings',      icon:'settings', pkg:'android.settings.SETTINGS' }
+];
+const FAKE_APPS = [
+  ['Kodi','#0f9d58'],['VLC for Android','#ff8c00'],['Spotify','#1db954'],['哔哩哔哩','#fb7299'],
+  ['Emby','#52b54b'],['Plex','#e5a00d'],['Kodi TV','#0f9d58'],['Twitch','#9146ff'],
+  ['腾讯视频','#ff6a00'],['爱奇艺','#00be06'],['优酷','#1eb8ff'],['网易云音乐','#e60026'],
+  ['Steam Link','#1b2838'],['Moonlight','#66ccff'],['Steam++','#2f6fed'],['文件管理','#3b8af5'],
+  ['设置','#607d8b'],['相机','#ff5722'],['相册','#795548'],['音乐','#9c27b0'],
+  ['时钟','#00bcd4'],['计算器','#455a64'],['投屏助手','#3f51b5'],['应用商店','#00a0ff']
+];
+
+/* ==================== 渲染 ==================== */
+const tileRow = document.getElementById('tile-row');
+TILES.forEach(t => {
+  const wrap = document.createElement('div');
+  wrap.className = 'tile-wrap';
+  wrap.innerHTML = `
+    <div class="tile" data-id="${t.id}" tabindex="0">
+      <div class="logo">${LOGOS[t.icon]}</div>
+      <div class="name">${t.name}</div>
+    </div>
+    <div class="reflection"><div class="inner">
+      <div class="tile">
+        <div class="logo">${LOGOS[t.icon]}</div>
+        <div class="name">${t.name}</div>
+      </div>
+    </div></div>`;
+  // 倒影内的卡片要带上底色
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--tile-' + t.id);
+  wrap.querySelector('.reflection .tile').style.background = bg.trim();
+  tileRow.appendChild(wrap);
+});
+
+const dockRow = document.getElementById('dock');
+DOCKS.forEach(d => {
+  const el = document.createElement('div');
+  el.className = 'dock';
+  el.dataset.id = d.id;
+  el.tabIndex = 0;
+  el.innerHTML = `${DOCK_ICONS[d.icon]}<div class="label">${d.name}</div>`;
+  dockRow.appendChild(el);
+});
+
+/* ==================== 焦点与键盘导航 ==================== */
+const stage = document.getElementById('stage');
+const applist = document.getElementById('applist');
+const grid = document.getElementById('app-grid');
+const toastEl = document.getElementById('toast');
+
+let focusables = [];      // 主界面可聚焦元素
+let gridFocusables = [];  // 列表页可聚焦元素
+let listMode = false;
+
+function refreshFocusables(){
+  focusables = [...document.querySelectorAll('.tile[data-id], .dock')];
+}
+function setFocus(el, pool){
+  [...document.querySelectorAll('.focused')].forEach(e => e.classList.remove('focused'));
+  if (el) el.classList.add('focused');
+}
+function currentPool(){ return applist.classList.contains('show') ? gridFocusables : focusables; }
+function currentIndex(){ return currentPool().indexOf(document.querySelector('.focused')); }
+
+document.addEventListener('keydown', e => {
+  const pool = currentPool();
+  if (e.key === 'Escape'){ closeAppList(); return; }
+  if (e.key === 'm' || e.key === 'M'){ openAppList('全部应用'); return; }
+  let i = currentIndex();
+  const cols = applist.classList.contains('show') ? 8 : 0;
+  if (e.key === 'ArrowRight'){ i = (i + 1) % pool.length; }
+  else if (e.key === 'ArrowLeft'){ i = (i - 1 + pool.length) % pool.length; }
+  else if (e.key === 'ArrowDown' && cols){ i = Math.min(i + cols, pool.length - 1); }
+  else if (e.key === 'ArrowUp' && cols){ i = Math.max(i - cols, 0); }
+  else if (e.key === 'Enter'){ pool[i]?.click(); return; }
+  else return;
+  e.preventDefault();
+  setFocus(pool[i]);
+});
+
+/* ==================== 交互：点击 / 长按 ==================== */
+let pressTimer = null;
+const LONG_PRESS_MS = 600;
+
+function bindActivate(el, onClick, onLong){
+  el.addEventListener('click', () => { if (!el.dataset.longPressed) onClick(); delete el.dataset.longPressed; });
+  el.addEventListener('mousedown', () => {
+    pressTimer = setTimeout(() => { el.dataset.longPressed = '1'; onLong(); }, LONG_PRESS_MS);
+  });
+  ['mouseup','mouseleave'].forEach(ev => el.addEventListener(ev, () => clearTimeout(pressTimer)));
+  el.addEventListener('focus', () => setFocus(el));
+}
+
+function renderTileHandlers(){
+  document.querySelectorAll('.tile[data-id]').forEach(el => {
+    const spec = TILES.find(t => t.id === el.dataset.id);
+    bindActivate(el,
+      () => toast(`启动本机应用 → ${spec.name}（${spec.pkg}）`),
+      () => openAppList(`选择要绑定的应用 · ${spec.name}`));
+  });
+  document.querySelectorAll('.dock').forEach(el => {
+    const spec = DOCKS.find(d => d.id === el.dataset.id);
+    bindActivate(el,
+      () => spec.pkg === '@applist'
+        ? openAppList('全部应用')
+        : toast(`执行系统能力 → ${spec.name}（${spec.pkg}）`),
+      () => openAppList(`选择要绑定的应用 · ${spec.name}`));
+  });
+}
+
+/* ==================== APPLIST ==================== */
+function openAppList(title){
+  document.getElementById('applist-title').textContent = title;
+  if (!grid.childElementCount){
+    FAKE_APPS.forEach(([name,color]) => {
+      const el = document.createElement('div');
+      el.className = 'app';
+      el.tabIndex = 0;
+      el.innerHTML = `<div class="ico" style="background:${color}">${name.slice(0,1)}</div><div class="lb">${name}</div>`;
+      bindActivate(el, () => { toast(`启动本机应用 → ${name}`); closeAppList(); },
+                       () => toast(`${name} · 应用信息`));
+      grid.appendChild(el);
+    });
+  }
+  applist.classList.add('show');
+  gridFocusables = [...grid.querySelectorAll('.app')];
+  setTimeout(() => setFocus(gridFocusables[0]), 30);
+}
+function closeAppList(){
+  applist.classList.remove('show');
+  gridFocusables = [];
+  setFocus(focusables[0]);
+}
+
+/* ==================== Toast / 时钟 / 缩放 ==================== */
+let toastTimer;
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+}
+function tick(){
+  const d = new Date();
+  const h = d.getHours() % 12 || 12;
+  document.getElementById('clock').textContent =
+    `${h}:${String(d.getMinutes()).padStart(2,'0')} ${d.getHours() < 12 ? 'AM' : 'PM'}`;
+  document.getElementById('date').textContent =
+    d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' }).replace(', ', ',');
+}
+function fit(){
+  const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+  stage.style.transform = `scale(${s})`;
+}
+window.addEventListener('resize', fit);
+
+/* ==================== 启动 ==================== */
+renderTileHandlers();
+refreshFocusables();
+setFocus(focusables[0]);
+tick(); setInterval(tick, 10000);
+fit();
+</script>
+</body>
+</html>

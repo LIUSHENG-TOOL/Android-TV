@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Google Play 官方四色图标（路径取自 Iconify logos 集合的 google-play，视口 100x101，未改动几何）。
+  官方配色与分区（此前我做反了）：
+    · 左侧竖直细条 = 蓝 #4285F4
+    · 左上三角区   = 绿 #34A853
+    · 左下三角区   = 红 #EA4335
+    · 右侧尖角     = 黄 #FBBC04
+  绘制顺序与官方 SVG 一致：红 → 黄 → 蓝 → 绿。
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="121dp"
+    android:viewportWidth="100"
+    android:viewportHeight="101">
+    <path
+        android:fillColor="#FFEA4335"
+        android:pathData="M42.714,48.203 L0.38,92.557 A11.483,11.483 0 0 0 17.194,99.372 L64.829,72.242 Z" />
+    <path
+        android:fillColor="#FFFBBC04"
+        android:pathData="M85.523,40.663 L64.923,28.865 L41.736,49.213 L65.017,72.178 L85.46,60.506 A11.199,11.199 0 0 0 85.46,40.663 Z" />
+    <path
+        android:fillColor="#FF4285F4"
+        android:pathData="M0.379,8.391 A11,11 0 0 0 0,11.294 L0,89.655 C0.003,90.635 0.13,91.61 0.379,92.557 L44.165,49.34 Z" />
+    <path
+        android:fillColor="#FF34A853"
+        android:pathData="M43.03,50.474 L64.923,28.865 L17.35,1.61 A11.74,11.74 0 0 0 11.45,0 A11.48,11.48 0 0 0 0.38,8.36 Z" />
+</vector>

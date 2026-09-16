@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dock 按钮：普通 / 聚焦 两种状态（聚焦时白边，与设计稿 Settings 高亮一致） -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/dock_radius" />
+            <gradient
+                android:angle="270"
+                android:endColor="@color/dock_bottom"
+                android:startColor="@color/dock_top" />
+            <stroke
+                android:width="4dp"
+                android:color="@color/dock_stroke_focus" />
+        </shape>
+    </item>
+
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/dock_radius" />
+            <gradient
+                android:angle="270"
+                android:endColor="@color/dock_bottom"
+                android:startColor="@color/dock_top" />
+            <stroke
+                android:width="4dp"
+                android:color="@color/dock_stroke_focus" />
+        </shape>
+    </item>
+
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/dock_radius" />
+            <gradient
+                android:angle="270"
+                android:endColor="@color/dock_bottom"
+                android:startColor="@color/dock_top" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/dock_stroke" />
+        </shape>
+    </item>
+</selector>

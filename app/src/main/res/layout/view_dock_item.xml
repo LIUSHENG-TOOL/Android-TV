@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dock_item"
+    android:layout_width="@dimen/dock_width"
+    android:layout_height="@dimen/dock_height"
+    android:background="@drawable/bg_dock_item"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="16dp">
+
+    <ImageView
+        android:id="@+id/dock_icon"
+        android:layout_width="@dimen/dock_icon_size"
+        android:layout_height="@dimen/dock_icon_size"
+        android:contentDescription="@string/app_name" />
+
+    <TextView
+        android:id="@+id/dock_title"
+        style="@style/DockTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:gravity="center_horizontal" />
+</LinearLayout>

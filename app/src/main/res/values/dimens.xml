@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="tile_width">230dp</dimen>
+    <dimen name="tile_height">300dp</dimen>
+    <dimen name="tile_radius">18dp</dimen>
+    <dimen name="tile_logo_size">112dp</dimen>
+    <dimen name="tile_title_size">22sp</dimen>
+    <dimen name="tile_spacing">28dp</dimen>
+    <dimen name="tile_stroke">2dp</dimen>
+    <dimen name="tile_stroke_focus">4dp</dimen>
+
+    <dimen name="dock_width">150dp</dimen>
+    <dimen name="dock_height">104dp</dimen>
+    <dimen name="dock_radius">12dp</dimen>
+    <dimen name="dock_icon_size">40dp</dimen>
+    <dimen name="dock_text_size">15sp</dimen>
+    <dimen name="dock_spacing">14dp</dimen>
+
+    <dimen name="status_text_size">18sp</dimen>
+    <dimen name="status_padding_h">40dp</dimen>
+
+    <dimen name="list_icon_size">54dp</dimen>
+    <dimen name="list_item_width">160dp</dimen>
+    <dimen name="list_item_height">160dp</dimen>
+    <dimen name="list_text_size">14sp</dimen>
+</resources>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 蓝色圆角底 -->
+    <path
+        android:fillColor="#FF1233B8"
+        android:pathData="M0,0 H108 V108 H0 Z" />
+    <!-- 白色电视屏幕 -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M26,32 H82 A5,5 0 0 1 87,37 V71 A5,5 0 0 1 82,76 H26 A5,5 0 0 1 21,71 V37 A5,5 0 0 1 26,32 Z" />
+    <!-- 屏幕中的播放三角 -->
+    <path
+        android:fillColor="#FF3B8AF5"
+        android:pathData="M46,42 L68,54 L46,66 Z" />
+    <!-- 底座 -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M44,80 H64 V86 H44 Z" />
+</vector>

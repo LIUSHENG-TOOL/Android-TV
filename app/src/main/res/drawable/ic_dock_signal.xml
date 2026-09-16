@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Signal Source：中心圆点 + 左右两侧对称的信号弧（( ( • ) )，原设计稿为该样式）。
+  此前误画成"底部圆点 + 向上张开的 WiFi 弧"，方向不对。
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <!-- 中心圆点 -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M41,50 A9,9 0 1 0 59,50 A9,9 0 1 0 41,50 Z" />
+    <!-- 右侧三弧 -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M64.1,35.9 A20,20 0 0 1 64.1,64.1"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round"
+        android:strokeWidth="6.5" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M72.6,27.4 A32,32 0 0 1 72.6,72.6"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round"
+        android:strokeWidth="6.5" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M81.1,18.9 A44,44 0 0 1 81.1,81.1"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round"
+        android:strokeWidth="6.5" />
+    <!-- 左侧三弧 -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M35.9,64.1 A20,20 0 0 1 35.9,35.9"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round"
+        android:strokeWidth="6.5" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M27.4,72.6 A32,32 0 0 1 27.4,27.4"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round"
+        android:strokeWidth="6.5" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M18.9,81.1 A44,44 0 0 1 18.9,18.9"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round"
+        android:strokeWidth="6.5" />
+</vector>

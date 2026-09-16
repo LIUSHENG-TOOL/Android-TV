@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- API < 26 兼容圆形图标 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FF1233B8"
+        android:pathData="M0,54 A54,54 0 1 0 108,54 A54,54 0 1 0 0,54 Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M30,38 H78 A5,5 0 0 1 83,43 V67 A5,5 0 0 1 78,72 H30 A5,5 0 0 1 25,67 V43 A5,5 0 0 1 30,38 Z" />
+    <path
+        android:fillColor="#FF3B8AF5"
+        android:pathData="M47,45 L66,55 L47,65 Z" />
+</vector>
